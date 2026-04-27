@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Maxence Drouhin – Développeur PHP full stack</title>
+    <style>
+        :root {
+            --color-text: #1a1a1a;
+            --color-muted: #555;
+            --color-accent: #2c3e50;
+            --color-bg: #fafafa;
+            --color-card: #ffffff;
+            --color-border: #e0e0e0;
+            --color-rule: #cfd4d8;
+            --max-width: 880px;
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2.5rem;
+            --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            margin: 0;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            line-height: 1.55;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a {
+            color: var(--color-accent);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        a:hover,
+        a:focus {
+            color: #000;
+        }
+
+        .page {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: var(--space-xl) var(--space-lg);
+            background-color: var(--color-card);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        header.cv-header {
+            border-bottom: 2px solid var(--color-text);
+            padding-bottom: var(--space-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        header.cv-header h1 {
+            font-size: 2rem;
+            line-height: 1.2;
+            margin: 0 0 var(--space-xs) 0;
+            letter-spacing: 0.5px;
+        }
+
+        header.cv-header .role {
+            font-size: 1.05rem;
+            color: var(--color-muted);
+            margin: 0 0 var(--space-md) 0;
+            font-weight: 500;
+        }
+
+        .contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm) var(--space-lg);
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .contact li {
+            display: flex;
+            gap: var(--space-xs);
+        }
+
+        .contact .label {
+            color: var(--color-muted);
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xl);
+        }
+
+        section.cv-section > h2 {
+            font-size: 1.15rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--color-accent);
+            margin: 0 0 var(--space-md) 0;
+            padding-bottom: var(--space-xs);
+            border-bottom: 1px solid var(--color-rule);
+        }
+
+        section.cv-section h3 {
+            font-size: 1rem;
+            margin: 0 0 var(--space-xs) 0;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-sm) var(--space-lg);
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .skill-grid li {
+            line-height: 1.5;
+        }
+
+        .skill-grid strong {
+            color: var(--color-text);
+        }
+
+        .languages {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm) var(--space-xl);
+        }
+
+        .education-list,
+        .experience-list,
+        .internship-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+        }
+
+        .education-item {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: var(--space-md);
+            align-items: baseline;
+        }
+
+        .education-item .year {
+            font-weight: 600;
+            color: var(--color-accent);
+            white-space: nowrap;
+        }
+
+        .experience-item {
+            padding-left: var(--space-md);
+            border-left: 3px solid var(--color-rule);
+        }
+
+        .experience-item header {
+            margin-bottom: var(--space-xs);
+        }
+
+        .experience-item .period {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--color-muted);
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .experience-item h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .experience-item p {
+            margin: var(--space-xs) 0 0 0;
+        }
+
+        .internship-item {
+            padding-left: var(--space-md);
+            border-left: 2px dashed var(--color-rule);
+        }
+
+        .internship-item .period {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--color-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .internship-item p {
+            margin: var(--space-xs) 0 0 0;
+        }
+
+        footer.cv-footer {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--color-rule);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--color-muted);
+        }
+
+        @media (max-width: 600px) {
+            .page {
+                padding: var(--space-lg) var(--space-md);
+                box-shadow: none;
+            }
+
+            header.cv-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .education-item {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .experience-item,
+            .internship-item {
+                padding-left: var(--space-sm);
+            }
+        }
+
+        @media print {
+            html,
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                font-size: 11pt;
+            }
+
+            body * {
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+
+            a {
+                color: #000 !important;
+                text-decoration: none;
+            }
+
+            .page {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+                background: #fff !important;
+            }
+
+            section.cv-section {
+                page-break-inside: avoid;
+            }
+
+            .experience-item,
+            .education-item,
+            .internship-item {
+                page-break-inside: avoid;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            section.cv-section > h2 {
+                color: #000 !important;
+                border-bottom-color: #000 !important;
+            }
+
+            .experience-item {
+                border-left-color: #888 !important;
+            }
+
+            .internship-item {
+                border-left-color: #888 !important;
+            }
+
+            header.cv-header {
+                border-bottom-color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="cv-header">
+            <h1>Maxence DROUHIN</h1>
+            <p class="role">Développeur Web Full Stack / Analyste Programmeur</p>
+            <ul class="contact">
+                <li>
+                    <span class="label">Email :</span>
+                    <a href="mailto:maxence.drouhin@gmail.com">maxence.drouhin@gmail.com</a>
+                </li>
+                <li>
+                    <span class="label">Pays :</span>
+                    <span>France</span>
+                </li>
+                <li>
+                    <span class="label">Permis :</span>
+                    <span>B</span>
+                </li>
+            </ul>
+        </header>
+
+        <main>
+            <section class="cv-section" aria-labelledby="skills-fonctionnelles">
+                <h2 id="skills-fonctionnelles">Compétences fonctionnelles</h2>
+                <ul class="skill-grid">
+                    <li><strong>Utilisateur :</strong> Spécifications fonctionnelles, Manuel utilisateur, Recueil du besoin, Assistance.</li>
+                    <li><strong>Diagramme d'objets :</strong> UML.</li>
+                    <li><strong>Représentation de bases de données :</strong> Merise MCD/MLD.</li>
+                    <li><strong>Planning et ordonnancement des tâches :</strong> Microsoft Project.</li>
+                </ul>
+            </section>
+
+            <section class="cv-section" aria-labelledby="skills-techniques">
+                <h2 id="skills-techniques">Compétences techniques</h2>
+                <ul class="skill-grid">
+                    <li><strong>CMS :</strong> Pimcore 4.X, eZPublish 4.X (cluster mode), Drupal 7, Joomla!</li>
+                    <li><strong>Langages :</strong> PHP, JavaScript</li>
+                    <li><strong>Gabarits :</strong> Twig, Smarty, Phtml, (X)HTML, HTML5, Bootstrap</li>
+                    <li><strong>Frameworks :</strong> Symfony, Zend, Laravel, Slim, Angular</li>
+                    <li><strong>Librairies :</strong> jQuery</li>
+                    <li><strong>ORM :</strong> Doctrine PHP, Eloquent</li>
+                    <li><strong>Tests :</strong> PHPUnit, Behat, Selenium</li>
+                    <li><strong>Gestion de tickets :</strong> Jira, Redmine, Mantis, Trello, TestTrackPro</li>
+                    <li><strong>Versionnement :</strong> Git, Subversion, Mercurial</li>
+                    <li><strong>Hébergement Git :</strong> GitHub, GitLab</li>
+                    <li><strong>Gestion de dépendances :</strong> Composer, npm</li>
+                    <li><strong>NoSQL :</strong> Redis</li>
+                    <li><strong>IDE :</strong> PhpStorm</li>
+                    <li><strong>Bases de données :</strong> MySQL, PostgreSQL, Oracle</li>
+                    <li><strong>Environnements :</strong> LAMP, WAMP, MAMP</li>
+                    <li><strong>Virtualisation :</strong> Docker</li>
+                    <li><strong>Qualité de code :</strong> phpcs, phpstan</li>
+                    <li><strong>Méthodologies :</strong> Agile (Scrum, Kanban)</li>
+                    <li><strong>Bureautique :</strong> Microsoft Office, OpenOffice</li>
+                    <li><strong>Serveurs :</strong> Apache, Nginx</li>
+                    <li><strong>Cloud :</strong> AWS</li>
+                    <li><strong>Certificats SSL/TLS :</strong> Let's Encrypt</li>
+                    <li><strong>Plateformes de paiement :</strong> Ogone, Braintree</li>
+                </ul>
+            </section>
+
+            <section class="cv-section" aria-labelledby="langues">
+                <h2 id="langues">Langues</h2>
+                <ul class="languages">
+                    <li><strong>Français :</strong> langue maternelle</li>
+                    <li><strong>Anglais :</strong> courant</li>
+                    <li><strong>Espagnol :</strong> niveau scolaire</li>
+                </ul>
+            </section>
+
+            <section class="cv-section" aria-labelledby="formation">
+                <h2 id="formation">Formation</h2>
+                <ul class="education-list">
+                    <li class="education-item">
+                        <span class="year">2011</span>
+                        <span>Bachelor d'informatique, Université de Glamorgan (Royaume-Uni)</span>
+                    </li>
+                    <li class="education-item">
+                        <span class="year">2010</span>
+                        <span>BTS Informatique de Gestion, 2<sup>e</sup> année, option développeur d'applications, Lycée Parc de Vilgénis (Massy, 91)</span>
+                    </li>
+                    <li class="education-item">
+                        <span class="year">2009</span>
+                        <span>BTS Informatique de Gestion, 1<sup>re</sup> année, Lycée Parc de Vilgénis (Massy, 91)</span>
+                    </li>
+                    <li class="education-item">
+                        <span class="year">2008</span>
+                        <span>Baccalauréat Sciences Économiques et Sociales</span>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="cv-section" aria-labelledby="experiences">
+                <h2 id="experiences">Expériences professionnelles</h2>
+                <ol class="experience-list">
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Novembre 2021 – Avril 2023</span>
+                                <h3>Développeur full stack chez ACSEO</h3>
+                            </header>
+                            <p>Mission chez le client et développement interne de nouvelles fonctionnalités et corrections de bugs sous Symfony 5.4, PHP 7.3, jQuery, Vanilla JS. Tests avec PHPUnit et Behat.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Octobre 2018 – Mai 2021</span>
+                                <h3>Développeur full stack chez Juri'Predis</h3>
+                            </header>
+                            <p>Stack : PHP (Symfony 4.X, Laravel 8.X, Slim), Angular 8.X, MySQL, Redis, REST, Docker, Git, GitLab CI, Linux.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Février 2017 – Septembre 2018</span>
+                                <h3>Développeur full stack PHP 5/7 chez John Paul</h3>
+                            </header>
+                            <p>Sites : <a href="https://my-thalassa.com" target="_blank" rel="noopener">my-thalassa.com</a>, <a href="https://visaplatinum.fr" target="_blank" rel="noopener">visaplatinum.fr</a>, <a href="https://visaplatinumbusiness.fr" target="_blank" rel="noopener">visaplatinumbusiness.fr</a>. Environnement : API REST, LAMP, Composer, Zend Framework 2/3.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Août 2016 – Janvier 2017</span>
+                                <h3>Développeur PHP chez MRM / McCann Paris</h3>
+                            </header>
+                            <p>Backend pour Peugeot Scooters (Zend Framework 1.9 et Pimcore CMS) : <a href="https://peugeot-motocycles.com" target="_blank" rel="noopener">peugeot-motocycles.com</a>, <a href="https://peugeotscooters.vn" target="_blank" rel="noopener">peugeotscooters.vn</a>.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Juillet 2015 – Juillet 2016</span>
+                                <h3>Développeur PHP full stack chez Afnor Groupe</h3>
+                            </header>
+                            <p>Animations HTML5/CSS3/jQuery pour Afnor Certifications (<a href="https://boutique-certification.afnor.org" target="_blank" rel="noopener">boutique-certification.afnor.org</a>). Tâches planifiées et interface de gestion des newsletters. Intégration responsive pour la refonte d'Afnor Compétences (<a href="https://boutique-formation.afnor.org" target="_blank" rel="noopener">boutique-formation.afnor.org</a>). Refonte du module de génération des PDF d'inscription. Apache vhost (réécriture d'URLs, redirections). Webservices SOAP pour SSO.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Janvier 2014 – Juin 2015</span>
+                                <h3>Développeur PHP full stack chez JCDecaux France</h3>
+                            </header>
+                            <p>Système de vélos en libre-service Cyclocity® (Vélib') : <a href="https://cyclocity.com" target="_blank" rel="noopener">cyclocity.com</a>. Frontend &amp; backend sur eZ Publish 4.5. SOAP, environnement multi-serveurs (proxies / reverse proxies), SVN, LAMP, bash Linux, cronjobs, gestion des droits utilisateurs CMS. Backend PHP 5.3, frontend HTML5/CSS3/JS/jQuery. Support utilisateur, résolution de bugs. API REST (envoi de mails). Module d'inscription à des partenariats. Implémentation PCI DSS pour les paiements.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Novembre – Décembre 2013</span>
+                                <h3>Développeur web frontend &amp; backend chez ONISEP (<a href="https://librairie.onisep.fr" target="_blank" rel="noopener">librairie.onisep.fr</a>)</h3>
+                            </header>
+                            <p>Migration de l'ancienne librairie en ligne (système propriétaire) vers eZ Publish 4.6. Imports de données en PHP 5.3. AJAX via eZJSCore. Frontend (X)HTML5/CSS3/jQuery.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Avril 2013 – Juillet 2016</span>
+                                <h3>Développeur web frontend &amp; backend pour Sapiens Group</h3>
+                            </header>
+                            <p>Missions chez Onisep, JCDecaux, Afnor. En régie : Apart (<a href="https://apar.fr" target="_blank" rel="noopener">apar.fr</a>), Alcyon Europe (<a href="https://alcyon.eu" target="_blank" rel="noopener">alcyon.eu</a>), Quejadore (<a href="https://quejadore.com" target="_blank" rel="noopener">quejadore.com</a>). Réponse à des appels d'offres. Migration eZ Publish 4.3 → 4.7. Intégration de newsletters. WAMP/MAMP/LAMP. Backend PHP 5.3, frontend (X)HTML/CSS3/JS. API REST sur eZ Publish 4.7. Drupal 7, workflows.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Janvier – Février 2013</span>
+                                <h3>Développement web (Joomla!) pour Valérie Drummond, sculpteur</h3>
+                            </header>
+                            <p>PHP 5, jQuery, (X)HTML5, CSS, MySQL. Tests cross-navigateurs. Hébergement OVH. Statistiques Google Analytics et XiTi.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="experience-item">
+                            <header>
+                                <span class="period">Juin – Juillet 2011</span>
+                                <h3>Développement web pour la MJC de Bièvres (Bièvres, France)</h3>
+                            </header>
+                            <p>Frontend &amp; backend PHP 5, (X)HTML, CSS3. Proposition graphique. Tests. Hébergement Amen.fr.</p>
+                        </article>
+                    </li>
+                </ol>
+            </section>
+
+            <section class="cv-section" aria-labelledby="stages">
+                <h2 id="stages">Stages</h2>
+                <ul class="internship-list">
+                    <li>
+                        <article class="internship-item">
+                            <span class="period">Février – Mars 2010</span>
+                            <p>Stage de 2<sup>e</sup> année BTS IG, Laboratoire d'Informatique de l'École Polytechnique (LIX), Palaiseau (91). Développement Scilab en bioinformatique.</p>
+                        </article>
+                    </li>
+                    <li>
+                        <article class="internship-item">
+                            <span class="period">Mai – Juin 2009</span>
+                            <p>Stage de 1<sup>re</sup> année BTS IG, DSI de l'École Polytechnique, Palaiseau (91). Développement C# ASP.NET Framework 2.0.</p>
+                        </article>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <footer class="cv-footer">
+            <p>&copy; 2024</p>
+        </footer>
+    </div>
+</body>
+</html>
