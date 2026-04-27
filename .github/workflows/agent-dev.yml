@@ -1,0 +1,88 @@
+name: Agent Dev
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  agent-dev:
+    if: github.event.label.name == 'agent'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - name: Remove agent label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh issue edit ${{ github.event.issue.number }} --remove-label "agent" --repo ${{ github.repository }}
+
+      - name: Set project status to In Progress
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
+        run: |
+          ITEM_ID=$(gh api graphql -f query='
+            query($owner: String!, $repo: String!, $issue: Int!) {
+              repository(owner: $owner, name: $repo) {
+                issue(number: $issue) {
+                  projectItems(first: 10) {
+                    nodes { id project { id } }
+                  }
+                }
+              }
+            }' \
+            -f owner=anthonykgross -f repo=relevent-mobile -F issue=${{ github.event.issue.number }} \
+            --jq '.data.repository.issue.projectItems.nodes[] | select(.project.id == "PVT_kwHOAEz_tM4BTVCU") | .id')
+
+          gh api graphql -f query='
+            mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
+              updateProjectV2ItemFieldValue(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $field
+                value: { singleSelectOptionId: $value }
+              }) {
+                projectV2Item { id }
+              }
+            }' \
+            -f project="PVT_kwHOAEz_tM4BTVCU" \
+            -f item="$ITEM_ID" \
+            -f field="PVTSSF_lAHOAEz_tM4BTVCUzhAmgLo" \
+            -f value="47fc9ee4"
+
+      - id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          github_token: ${{ secrets.GH_PROJECT_TOKEN }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Implement the following GitHub issue:
+            - Issue #${{ github.event.issue.number }}: ${{ github.event.issue.title }}
+            - Description: ${{ github.event.issue.body }}
+
+            Instructions:
+            1. Create a branch named `agent/issue-${{ github.event.issue.number }}`
+            2. Read CLAUDE.md to understand the project architecture
+            3. Implement the feature described in the issue
+            4. Open a PR referencing issue #${{ github.event.issue.number }}
+            5. Before exiting, ALWAYS post a single summary comment on issue #${{ github.event.issue.number }} using:
+               gh issue comment ${{ github.event.issue.number }} --repo ${{ github.repository }} --body-file <path>
+               The comment must include:
+                 - PR link (if one was opened) or explanation of why none was created
+                 - What was implemented (short list)
+                 - What was skipped or left as TODO, with reason
+                 - Any blockers or questions for the human
+               This comment is the only signal the issue author has — never skip it, even on partial runs.
+          claude_args: "--model claude-opus-4-7 --max-turns 300 --allowedTools Bash,Read,Edit,MultiEdit,Write,Glob,Grep"
+
+      - name: Post failure notice
+        if: failure() && steps.claude.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
+        run: |
+          gh issue comment ${{ github.event.issue.number }} \
+            --repo ${{ github.repository }} \
+            --body "Agent dev crashed before it could post its own summary. See [run logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details."

@@ -1,0 +1,61 @@
+name: Agent Review
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  agent-review:
+    if: ${{ startsWith(github.event.pull_request.head.ref, 'agent/issue-') && github.event.review.state != 'approved' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          token: ${{ secrets.GH_PROJECT_TOKEN }}
+
+      - id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          github_token: ${{ secrets.GH_PROJECT_TOKEN }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            A review has been submitted on PR #${{ github.event.pull_request.number }} (branch `${{ github.event.pull_request.head.ref }}`).
+
+            Reviewer: ${{ github.event.review.user.login }}
+            Review state: ${{ github.event.review.state }}
+            Review comment: ${{ github.event.review.body }}
+
+            Instructions:
+            1. Checkout branch `${{ github.event.pull_request.head.ref }}`
+            2. Fetch all review comments with:
+               gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/comments
+               gh api repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews
+            3. Read CLAUDE.md to understand the project architecture
+            4. Apply every requested change from the review
+            5. Commit and push to the same branch `${{ github.event.pull_request.head.ref }}`
+            6. Do NOT open a new PR
+            7. Before exiting, ALWAYS post a single summary comment on PR #${{ github.event.pull_request.number }} using:
+               gh pr comment ${{ github.event.pull_request.number }} --repo ${{ github.repository }} --body-file <path>
+               The comment must list, for each review item:
+                 - Applied: short description + commit SHA
+                 - Skipped: reason (out of scope, conflicts with CLAUDE.md, etc.)
+                 - Failed: what was attempted and why it did not work
+               If nothing was actionable, say so explicitly. This comment is the only signal the reviewer has — never skip it, even on partial runs.
+          claude_args: "--model claude-opus-4-7 --max-turns 300 --allowedTools Bash,Read,Edit,MultiEdit,Write,Glob,Grep"
+
+      - name: Post failure notice
+        if: failure() && steps.claude.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --body "Agent review crashed before it could post its own summary. See [run logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details."
