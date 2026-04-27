@@ -314,19 +314,14 @@
             html,
             body {
                 background: #fff !important;
-                color: #000 !important;
                 font-size: 10pt;
                 line-height: 1.4;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
             body * {
-                background: transparent !important;
                 box-shadow: none !important;
-            }
-
-            a {
-                color: #000 !important;
-                text-decoration: none;
             }
 
             .page {
@@ -344,7 +339,6 @@
             }
 
             header.cv-header {
-                border-bottom-color: #000 !important;
                 margin-bottom: 0.8rem;
                 padding-bottom: 0.5rem;
                 break-inside: avoid;
@@ -360,8 +354,6 @@
             }
 
             section.cv-section > h2 {
-                color: #000 !important;
-                border-bottom-color: #000 !important;
                 font-size: 11pt;
                 margin: 0 0 0.4rem 0;
                 break-after: avoid;
@@ -384,20 +376,6 @@
             .internship-item {
                 break-inside: avoid;
                 page-break-inside: avoid;
-            }
-
-            .experience-item {
-                border-left-color: #888 !important;
-            }
-
-            .internship-item {
-                border-left-color: #888 !important;
-            }
-
-            .education-item .year,
-            .experience-item .period,
-            .internship-item .period {
-                color: #000 !important;
             }
 
             p {
