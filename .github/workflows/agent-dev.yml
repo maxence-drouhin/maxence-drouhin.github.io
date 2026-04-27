@@ -20,39 +20,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh issue edit ${{ github.event.issue.number }} --remove-label "agent" --repo ${{ github.repository }}
 
-      - name: Set project status to In Progress
-        env:
-          GH_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
-        run: |
-          ITEM_ID=$(gh api graphql -f query='
-            query($owner: String!, $repo: String!, $issue: Int!) {
-              repository(owner: $owner, name: $repo) {
-                issue(number: $issue) {
-                  projectItems(first: 10) {
-                    nodes { id project { id } }
-                  }
-                }
-              }
-            }' \
-            -f owner=anthonykgross -f repo=relevent-mobile -F issue=${{ github.event.issue.number }} \
-            --jq '.data.repository.issue.projectItems.nodes[] | select(.project.id == "PVT_kwHOAEz_tM4BTVCU") | .id')
-
-          gh api graphql -f query='
-            mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
-              updateProjectV2ItemFieldValue(input: {
-                projectId: $project
-                itemId: $item
-                fieldId: $field
-                value: { singleSelectOptionId: $value }
-              }) {
-                projectV2Item { id }
-              }
-            }' \
-            -f project="PVT_kwHOAEz_tM4BTVCU" \
-            -f item="$ITEM_ID" \
-            -f field="PVTSSF_lAHOAEz_tM4BTVCUzhAmgLo" \
-            -f value="47fc9ee4"
-
       - id: claude
         uses: anthropics/claude-code-action@v1
         with:
