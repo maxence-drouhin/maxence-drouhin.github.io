@@ -6,13 +6,27 @@
     <title>Maxence Drouhin – Développeur PHP full stack</title>
     <style>
         :root {
+            /* Reggae-inspired palette — used as accents, never as full backgrounds */
+            --rasta-red: #c2272d;
+            --rasta-red-dark: #9a1c1c;
+            --rasta-gold: #e6a817;
+            --rasta-gold-deep: #b07a10;
+            --rasta-green: #1b5e20;
+            --terracotta: #a44a26;
+            --ocre: #b07a10;
+
+            /* Semantic tokens — change palette here, propagates everywhere */
             --color-text: #1a1a1a;
-            --color-muted: #555;
-            --color-accent: #2c3e50;
-            --color-bg: #fafafa;
+            --color-muted: #5a5a5a;
+            --color-accent: var(--rasta-green);
+            --color-accent-warm: var(--terracotta);
+            --color-link: var(--rasta-red-dark);
+            --color-link-hover: #1a1a1a;
+            --color-bg: #fbf7ef;
             --color-card: #ffffff;
-            --color-border: #e0e0e0;
-            --color-rule: #cfd4d8;
+            --color-border: #e7dfd1;
+            --color-rule: #d4cdbf;
+
             --max-width: 880px;
             --space-xs: 0.25rem;
             --space-sm: 0.5rem;
@@ -20,6 +34,7 @@
             --space-lg: 1.5rem;
             --space-xl: 2.5rem;
             --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+            --font-display: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
         }
 
         *,
@@ -44,14 +59,16 @@
         }
 
         a {
-            color: var(--color-accent);
+            color: var(--color-link);
             text-decoration: underline;
+            text-decoration-thickness: 1px;
             text-underline-offset: 2px;
         }
 
         a:hover,
         a:focus {
-            color: #000;
+            color: var(--color-link-hover);
+            text-decoration-thickness: 2px;
         }
 
         .page {
@@ -60,6 +77,13 @@
             padding: var(--space-xl) var(--space-lg);
             background-color: var(--color-card);
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+            border-top: 6px solid var(--rasta-green);
+            border-image: linear-gradient(
+                to right,
+                var(--rasta-green) 0 33.33%,
+                var(--rasta-gold) 33.33% 66.66%,
+                var(--rasta-red) 66.66% 100%
+            ) 1;
         }
 
         header.cv-header {
@@ -69,10 +93,12 @@
         }
 
         header.cv-header h1 {
-            font-size: 2rem;
-            line-height: 1.2;
+            font-family: var(--font-display);
+            font-size: 2.25rem;
+            line-height: 1.15;
             margin: 0 0 var(--space-xs) 0;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+            color: var(--color-text);
         }
 
         header.cv-header .role {
@@ -108,13 +134,14 @@
         }
 
         section.cv-section > h2 {
-            font-size: 1.15rem;
+            font-family: var(--font-display);
+            font-size: 1.2rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             color: var(--color-accent);
             margin: 0 0 var(--space-md) 0;
             padding-bottom: var(--space-xs);
-            border-bottom: 1px solid var(--color-rule);
+            border-bottom: 2px solid var(--rasta-gold);
         }
 
         section.cv-section h3 {
@@ -167,14 +194,14 @@
         }
 
         .education-item .year {
-            font-weight: 600;
-            color: var(--color-accent);
+            font-weight: 700;
+            color: var(--rasta-red-dark);
             white-space: nowrap;
         }
 
         .experience-item {
             padding-left: var(--space-md);
-            border-left: 3px solid var(--color-rule);
+            border-left: 3px solid var(--rasta-green);
         }
 
         .experience-item header {
@@ -184,10 +211,11 @@
         .experience-item .period {
             display: block;
             font-size: 0.875rem;
-            color: var(--color-muted);
+            color: var(--color-accent-warm);
             margin-bottom: 2px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .experience-item h3 {
@@ -202,16 +230,17 @@
 
         .internship-item {
             padding-left: var(--space-md);
-            border-left: 2px dashed var(--color-rule);
+            border-left: 2px dashed var(--ocre);
         }
 
         .internship-item .period {
             display: block;
             font-size: 0.875rem;
-            color: var(--color-muted);
+            color: var(--color-accent-warm);
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 2px;
+            font-weight: 600;
         }
 
         .internship-item p {
@@ -272,6 +301,8 @@
                 padding: 0;
                 box-shadow: none;
                 background: #fff !important;
+                border-top: none !important;
+                border-image: none !important;
             }
 
             section.cv-section {
@@ -303,6 +334,12 @@
 
             header.cv-header {
                 border-bottom-color: #000 !important;
+            }
+
+            .education-item .year,
+            .experience-item .period,
+            .internship-item .period {
+                color: #000 !important;
             }
         }
     </style>
